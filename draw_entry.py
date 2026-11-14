@@ -1,5 +1,5 @@
-# Draw the 13 Nov 2026 world-news front page: 1024x1024 PNG via Pillow
-# with programmatic bounds checks: every text line must fit its panel.
+# Render the 13 Nov 2026 world-news front page as a 1024x1024 PNG.
+# Pillow draws each panel; a bounds check confirms every text line fits.
 from PIL import Image, ImageDraw, ImageFont
 
 W = H = 1024

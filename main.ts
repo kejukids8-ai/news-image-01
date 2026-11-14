@@ -1,11 +1,24 @@
-// A working news-image-01 entry (Node 22, standard library only): its image is the entry.png beside this file, and
-// the program copies it to /output/entry.png. A starting point, not a winner: replace the image. The gate takes a
-// whole PNG or JPEG of at most 1 MiB and 1024 by 1024 pixels, and the judge sees exactly the bytes copied.
+// Entry point for the news-image-01 make.fun bounty.
 //
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
+// The rendered 1024x1024 front page lives in entry.png beside this file. The
+// grader reads exactly the bytes we copy, so this program hands the image over
+// verbatim: it copies entry.png into the directory named by MAKEFUN_OUTPUT_DIR
+// (falling back to /output) under the fixed filename entry.png.
+//
+// Outside the grader there is no /output, so run it against a local directory:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
 import { copyFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-copyFileSync(new URL('./entry.png', import.meta.url), join(process.env.MAKEFUN_OUTPUT_DIR ?? '/output', 'entry.png'));
+// Resolve the source image relative to this script, not the process cwd, so
+// the copy works no matter which directory the command is launched from.
+const scriptDir: string = dirname(fileURLToPath(import.meta.url));
+const sourcePath: string = join(scriptDir, 'entry.png');
+
+const outputDir: string = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const targetPath: string = join(outputDir, 'entry.png');
+
+copyFileSync(sourcePath, targetPath);
+console.log(`copied entry.png -> ${targetPath}`);
